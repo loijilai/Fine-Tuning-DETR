@@ -1,0 +1,1 @@
+python test.py --data_path /tmp2/loijilai/cvpdl/hw1_dataset/valid --resume /tmp2/loijilai/cvpdl/mymodels/checkpoint.pth
