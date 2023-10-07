@@ -1,1 +1,2 @@
-python test.py --data_path /tmp2/loijilai/cvpdl/hw1_dataset/valid --resume /tmp2/loijilai/cvpdl/mymodels/checkpoint.pth
+# inference for json
+python infer_json.py --data_path /tmp2/loijilai/cvpdl/hw1_dataset/valid --resume /tmp2/loijilai/cvpdl/mymodels/checkpoint0299.pth --output_dir /tmp2/loijilai/cvpdl/detr/outputs/json
