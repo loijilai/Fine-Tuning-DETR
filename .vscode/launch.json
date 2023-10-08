@@ -11,7 +11,9 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "args":["--data_path", "/tmp2/loijilai/cvpdl/hw1_dataset/valid", "--resume", "/tmp2/loijilai/cvpdl/mymodels/checkpoint.pth"]
+            "args":["--data_path", "/tmp2/loijilai/cvpdl/hw1_dataset/valid", 
+                    "--resume", "/tmp2/loijilai/cvpdl/mymodels/checkpoint0299.pth",
+                    "--output_dir", "/tmp2/loijilai/cvpdl/detr/outputs/json"]
         }
     ]
 }
