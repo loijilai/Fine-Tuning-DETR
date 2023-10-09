@@ -1,7 +1,6 @@
 /hw1_dataset
 hw1_dataset.zip
 /mymodels
-/detr/outputs
 
 .nfs*
 *.ipynb

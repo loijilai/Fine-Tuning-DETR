@@ -1,1 +1,1 @@
-CUDA_VISIBLE_DEVICES=2 python main.py --dataset_file your_dataset --coco_path /tmp2/loijilai/cvpdl/hw1_dataset  --epochs 5 --lr=1e-4  --batch_size=2 --num_workers=4  --output_dir=outputs --resume=/tmp2/loijilai/detr-r50_no-class-head.pth
+CUDA_VISIBLE_DEVICES=2 python ./detr/main.py --dataset_file your_dataset --coco_path /tmp2/loijilai/cvpdl/hw1_dataset  --epochs 5 --lr=1e-4  --batch_size=2 --num_workers=4  --output_dir=../outputs --resume=/tmp2/loijilai/detr-r50_no-class-head.pth
