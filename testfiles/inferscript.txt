@@ -1,2 +1,2 @@
 # inference for json
-python ./detr/infer_json.py --data_path /tmp2/loijilai/cvpdl/hw1_dataset/valid --resume /tmp2/loijilai/cvpdl/mymodels/checkpoint0299.pth --output_dir /tmp2/loijilai/cvpdl/outputs/json
+python ./detr/infer_json.py --data_path /tmp2/loijilai/cvpdl/Fine-Tuning-DETR/hw1_dataset/valid --resume /tmp2/loijilai/cvpdl/Fine-Tuning-DETR/mymodels/checkpoint0299.pth --output_dir /tmp2/loijilai/cvpdl/Fine-Tuning-DETR/outputs/json

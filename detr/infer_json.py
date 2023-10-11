@@ -42,14 +42,6 @@ def get_images(in_path:str):
 
     return img_files
 
-COLORS = [[0.000, 0.447, 0.741], [0.850, 0.325, 0.098], [0.929, 0.694, 0.125],
-          [0.494, 0.184, 0.556], [0.466, 0.674, 0.188], [0.301, 0.745, 0.933]]
-
-CLASSES = [
-    'creatures', 'fish', 'jellyfish', 'penguin', 'puffin',
-    'shark', 'starfish', 'stingray'
-]
-
 def single_img_inference(filename:str, probas:torch.tensor, bboxes_scaled:torch.tensor):
     # probas: [100, 8] -> [sample_nums, 8] (filtered)
     boxes = [] # [sample_nums, 4]
@@ -69,7 +61,6 @@ def single_img_inference(filename:str, probas:torch.tensor, bboxes_scaled:torch.
 
     key = {"boxes": sorted_boxes, "labels": sorted_labels, "scores": sorted_scores}
     return {filename: key}
-
 
 
 def get_args_parser():
