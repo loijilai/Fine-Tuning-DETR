@@ -5,15 +5,22 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: Current File",
+            "name": "main.py",
             "type": "python",
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "justMyCode": true,
-            "args":["--data_path", "/tmp2/loijilai/cvpdl/hw1_dataset/valid", 
-                    "--resume", "/tmp2/loijilai/cvpdl/mymodels/checkpoint0299.pth",
-                    "--output_dir", "/tmp2/loijilai/cvpdl/detr/outputs/json"]
+            "env": {"CUDA_VISIBLE_DEVICES": "0"},
+            "args": [
+                "--dataset_file", "your_dataset",
+                "--coco_path", "/project/dsp/loijilai/cvpdl/hw1_dataset",
+                "--epochs", "350",
+                "--lr", "1e-4",
+                "--batch_size", "2",
+                "--num_workers", "4",
+                "--output_dir", "./outputs",
+                "--resume", "/tmp/loijilai/cvpdl/Fine-Tuning-DETR/checkpoint0299.pth"
+            ],
         }
     ]
 }
