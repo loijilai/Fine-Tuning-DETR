@@ -1,48 +1,35 @@
-# %%
-#matplotlib inline
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from PIL import Image
 from collections import defaultdict
 import json
 
-# %%
-# {image_id: (annotation:list)}
-image_ids_annotations = defaultdict(list)
-
 # Load annotations
-annoataion_path = "/home/loijilai/CS-hub/DL/cvpdl/deter/hw1_dataset/annotations/val.json"
-file = open(annoataion_path)
-anns = json.load(file)
+annoataion_path = "/project/dsp/loijilai/cvpdl/hw1_dataset/annotations/newtrain.json"
+with open(annoataion_path) as file:
+    annotation_file = json.load(file)
 
-# Add into data structure
-for ann in anns['annotations']:
-    image_id = ann['image_id'] # Are integers
-    image_ids_annotations[image_id].append(ann)
-# %%
-# {category_id: category_name} e.g. {0:None}, {1:fish}
-category_id_to_name = {}
-for ann in anns['categories']:
-    category_id_to_name[ann['id']] = ann['name']
-# %%
-
-image_path = "/home/loijilai/CS-hub/DL/cvpdl/deter/hw1_dataset/valid/IMG_2277_jpeg_jpg.rf.86c72d6192da48d941ffa957f4780665.jpg"
+image_path = "/tmp2/loijilai/cvpdl/hw3/Fine-Tuning-DETR/GLIGEN/generation_samples/text_grounding_template_1/IMG_8590_MOV-4_jpg.rf.1691f0958ffea266daa9011c203cd726.jpg63.png"
+file_name = image_path.split("/")[-1]
+image_id = [x["id"] for x in annotation_file['images'] if x['file_name'] == file_name][0]
+annotations = [x for x in annotation_file['annotations'] if x['image_id'] == image_id]
 img = Image.open(image_path)
-fig, ax = plt.subplots()
+fig, ax = plt.subplots(1)
+ax.imshow(img)
 
-image_anns = image_ids_annotations[44] # This picture has id 44
-
-for image_ann in image_anns:
-    bbox = image_ann['bbox']
-    name = category_id_to_name[image_ann['category_id']]
+# plot the image and bounding boxes
+for ann in annotations:
+    bbox = ann['bbox']
+    name = ann['category_id']
 
     x = float(bbox[0])
     y = float(bbox[1])
     w = float(bbox[2])
     h = float(bbox[3])
 
-    plt.text(x, y, name, fontdict={'fontsize': 10, 'color': 'white', 'backgroundcolor': 'red'})
-    bb = patches.Rectangle((x, y), w, h, linewidth=2, edgecolor='r', facecolor='none')
-    ax.add_patch(bb)
-ax.imshow(img)
-plt.show()
+    rect = patches.Rectangle((x, y), w, h, linewidth=2, edgecolor='r', facecolor='none')
+    ax.add_patch(rect)
+
+print("Saving image...")
+plt.savefig("test.png")
+print("Done!")

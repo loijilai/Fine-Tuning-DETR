@@ -22,17 +22,10 @@ import torchvision.transforms as transforms
 device = "cuda"
 
 def prompt_template1(label, height, width):
-    return label + ", height: " + str(height) + ", width: " + str(width)
+    return ", " + label + ", height: " + str(height) + ", width: " + str(width)
 
-# prompt = {
-#     1:"a fish swimming in an aquarium with rocks",
-#     2:"jellyfishs swimming in an aquarium with blue water",
-#     3:"a penguin swimming in an aquarium",
-#     4:"a puffin swimming in the water",
-#     5:"a shark swimming in an aquarium with a blue light",
-#     6:"a starfish is sitting on a rock in an aquarium",
-#     7:"a stingray is swimming in an aquarium"
-# }
+def prompt_template2(label, height, width):
+    return ", " + label + ", height: " + str(height) + ", width: " + str(width) + ", in the ocean, high quality, photorealistic"
 
 def set_alpha_scale(model, alpha_scale):
     from ldm.modules.attention import GatedCrossAttentionDense, GatedSelfAttentionDense
@@ -125,7 +118,7 @@ def get_clip_feature(model, processor, input, is_image=False):
         outputs = model(**inputs)
         feature = outputs.image_embeds 
         if which_layer_image == 'after_reproject':
-            feature = project( feature, torch.load('projection_matrix').cuda().T ).squeeze(0)
+            feature = project( feature, torch.load('/tmp2/loijilai/cvpdl/hw3/Fine-Tuning-DETR/GLIGEN/projection_matrix').cuda().T ).squeeze(0)
             feature = ( feature / feature.norm() )  * 28.7 
             feature = feature.unsqueeze(0)
     else:
@@ -449,10 +442,10 @@ def run(meta, config, starting_noise=None):
     os.makedirs( output_folder, exist_ok=True)
 
     start = len( os.listdir(output_folder) )
-    # image_ids = list(range(start,start+config.batch_size))
+    image_ids = list(range(start,start+config.batch_size))
     # print(image_ids)
-    for sample in samples_fake:
-        img_name = meta["file_name"]+'.png'
+    for image_id, sample in zip(image_ids, samples_fake):
+        img_name = meta["file_name"] + str(image_id) + '.png'
         sample = torch.clamp(sample, min=-1, max=1) * 0.5 + 0.5
         sample = sample.cpu().numpy().transpose(1,2,0) * 255 
         sample = Image.fromarray(sample.astype(np.uint8))
@@ -468,63 +461,62 @@ if __name__ == "__main__":
     parser.add_argument("--folder", type=str,  default="generation_samples", help="root folder for output")
 
 
-    parser.add_argument("--batch_size", type=int, default=1, help="")
+    parser.add_argument("--batch_size", type=int, default=4, help="")
     parser.add_argument("--no_plms", action='store_true', help="use DDIM instead. WARNING: I did not test the code yet")
     parser.add_argument("--guidance_scale", type=float,  default=7.5, help="")
     parser.add_argument("--negative_prompt", type=str,  default='longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality', help="")
-    parser.add_argument("--generation_strategy", type=str,  default='text', help="")
+    parser.add_argument("--generation_strategy", type=str, help="")
+    parser.add_argument("--input_file", type=str, help="")
     #parser.add_argument("--negative_prompt", type=str,  default=None, help="")
     args = parser.parse_args()
     
-    with open('/project/dsp/loijilai/cvpdl/hw1_dataset/annotations/for_gligen.json', 'r') as f:
+    with open(args.input_file, 'r') as f:
         data = json.load(f)
     
     # generate images
     meta_list = []
-    # if args.generation_strategy == 'text':
-    #     ckpt = "../gligen_checkpoints/checkpoint_generation_text.pth"
-    #     # prompt = ""
-    #     # phrases = ['a teddy bear', 'a bird']
-    #     # locations = [ [0.0,0.09,0.33,0.76], [0.55,0.11,1.0,0.8] ]
-    #     alpha_type = [0.3, 0.0, 0.7]
-    #     save_folder_name="text_grounding_template_1"
+    if args.generation_strategy == 'text1':
+        for d in data:
+            meta = {
+                "ckpt": "/tmp2/loijilai/cvpdl/hw3/Fine-Tuning-DETR/gligen_checkpoints/checkpoint_generation_text.pth",
+                "prompt": d["prompt"] + prompt_template1(d["label"], d["height"], d["width"]),
+                "phrases": [d["label"] for i in range(len(d["locations"]))],
+                "locations": d["locations"],
+                "alpha_type": [0.3, 0.0, 0.7],
+                "save_folder_name": "text_grounding_template_1",
+                "file_name": d["file_name"],
+            }
+            meta_list.append(meta)
 
-    #     for d in data:
-    #         meta = {
-    #             "ckpt": ckpt,
-    #             "prompt": prompt[d["category_id"]] + prompt_template1(d["label"], d["height"], d["width"]),
-    #             "phrases": [d["label"] for i in range(len(d["bbox"]))],
-    #             "locations": d["locations"],
-    #             "alpha_type": alpha_type,
-    #             "save_folder_name": save_folder_name,
-    #             "file_name": d["file_name"],
-    #         }
-    #         meta_list.append(meta)
+    elif args.generation_strategy == 'text2':
+        for d in data:
+            meta = {
+                "ckpt": "/tmp2/loijilai/cvpdl/hw3/Fine-Tuning-DETR/gligen_checkpoints/checkpoint_generation_text.pth",
+                "prompt": d["prompt"] + prompt_template2(d["label"], d["height"], d["width"]),
+                "phrases": [d["label"] for i in range(len(d["locations"]))],
+                "locations": d["locations"],
+                "alpha_type": [0.3, 0.0, 0.7],
+                "save_folder_name": "text_grounding_template_2",
+                "file_name": d["file_name"],
+            }
+            meta_list.append(meta)
 
-    # elif args.generation_strategy == 'text_image':
-    #     ckpt = "../gligen_checkpoints/checkpoint_generation_text_image.pth",
-    #     prompt = "",
-    #     # images = ['inference_images/clock.png'],
-    #     # phrases = ['alarm clock'],
-    #     # locations = [ [0.0,0.09,0.53,0.76] ],
-    #     alpha_type = [1.0, 0.0, 0.0],
-    #     save_folder_name="text_img_grounding"
-
-    #     for d in data:
-    #         meta = {
-    #             "ckpt": ckpt,
-    #             "prompt": prompt + prompt_template1(d["label"], d["height"], d["width"]),
-    #             "images": d["file_name"],
-    #             "phrases": [d["label"] for i in range(len(d["bbox"]))],
-    #             "locations": d["locations"],
-    #             "alpha_type": alpha_type,
-    #             "save_folder_name": save_folder_name,
-    #             "file_name": d["file_name"],
-    #         }
-    #         meta_list.append(meta)
+    elif args.generation_strategy == 'text_image':
+        for d in data:
+            meta = {
+                "ckpt": "/tmp2/loijilai/cvpdl/hw3/Fine-Tuning-DETR/gligen_checkpoints/checkpoint_generation_text_image.pth",
+                "prompt": d["prompt"] + prompt_template2(d["label"], d["height"], d["width"]),
+                "images": [os.path.join("/project/dsp/loijilai/cvpdl/hw1_dataset/train", d["file_name"])],
+                "phrases": [d["label"] for i in range(len(d["locations"]))],
+                "locations": d["locations"],
+                "alpha_type": [1.0, 0.0, 0.0],
+                "save_folder_name": "text_img_grounding",
+                "file_name": d["file_name"],
+            }
+            meta_list.append(meta)
 
 
-    # starting_noise = torch.randn(args.batch_size, 4, 64, 64).to(device)
-    # starting_noise = None
-    # for meta in meta_list:
-    #     run(meta, args, starting_noise)
+    starting_noise = torch.randn(args.batch_size, 4, 64, 64).to(device)
+    starting_noise = None
+    for meta in meta_list:
+        run(meta, args, starting_noise)

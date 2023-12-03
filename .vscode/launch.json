@@ -5,21 +5,46 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Gligen",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "3"
+            },
+            "args": [
+                "--generation_strategy",
+                "text_image"
+            ],
+        },
+        {
             "name": "main.py",
             "type": "python",
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "env": {"CUDA_VISIBLE_DEVICES": "0"},
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "0"
+            },
             "args": [
-                "--dataset_file", "your_dataset",
-                "--coco_path", "/project/dsp/loijilai/cvpdl/hw1_dataset",
-                "--epochs", "350",
-                "--lr", "1e-4",
-                "--batch_size", "2",
-                "--num_workers", "4",
-                "--output_dir", "./outputs",
-                "--resume", "/tmp/loijilai/cvpdl/Fine-Tuning-DETR/checkpoint0299.pth"
+                "--dataset_file",
+                "your_dataset",
+                "--coco_path",
+                "/project/dsp/loijilai/cvpdl/hw1_dataset",
+                "--epochs",
+                "350",
+                "--lr",
+                "1e-4",
+                "--batch_size",
+                "2",
+                "--num_workers",
+                "4",
+                "--output_dir",
+                "./outputs",
+                "--resume",
+                "/tmp/loijilai/cvpdl/Fine-Tuning-DETR/checkpoint0299.pth"
             ],
         }
     ]

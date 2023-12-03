@@ -48,26 +48,29 @@ for img in images:
         category.append(annotations[i]['category_id'])
         i += 1
 
-    if len(set(category)) == 1 and len(bbox) <= 6:
-        if num_of_each_category[category[0]] >= 1:
+    if len(set(category)) == 1:
+        if num_of_each_category[category[0]] >= 5:
             continue
-        result.append(
-            {"file_name": img["file_name"],
-                "height": img["height"],
-                "width": img["width"],
-                "category_id": category[0],
-                "bbox": bbox, # a list of bbox
-                "label": id_to_phrases[category[0]], 
-                "locations": [normalize(b, img["height"], img["width"]) for b in bbox], 
-                "prompt": ""
-                }
-        )
-        num_of_each_category[category[0]] += 1
+        if((category[0] == 2 and len(bbox) <= 6) or len(bbox) <= 1):
+            result.append(
+                {"file_name": img["file_name"],
+                    "height": 512,
+                    "width": 512,
+                    "category_id": category[0],
+                    # "bbox": bbox, # a list of bbox
+                    "label": id_to_phrases[category[0]], 
+                    "locations": [normalize(b, img["height"], img["width"]) for b in bbox], 
+                    "prompt": ""
+                    }
+            )
+            num_of_each_category[category[0]] += 1
         # result['images'].append(img)
         # result['annotations'].extend(anno)
 
 print(num_of_each_category)
 
+print("Writing to file...")
 with open('/project/dsp/loijilai/cvpdl/hw1_dataset/annotations/for_blip2.json', 'w') as f:
     # indent=2 is not necessary but makes the file human-readable
     json.dump(result, f, indent=2)
+print("Done!")
