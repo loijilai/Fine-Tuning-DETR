@@ -2,7 +2,7 @@
 hw1_dataset.zip
 /mymodels
 /gligen_checkpoints
-/GLIGEN
+**/generation_samples
 
 .nfs*
 *.ipynb
