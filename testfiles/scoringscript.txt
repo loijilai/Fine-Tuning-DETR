@@ -1,1 +1,0 @@
-python ./hw1_dataset/evaluate.py ./outputs/json/output.json ./hw1_dataset/annotations/val.json 

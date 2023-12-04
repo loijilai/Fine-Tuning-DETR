@@ -1,5 +1,0 @@
-CUDA_VISIBLE_DEVICES=2 python ./detr/main.py \
---dataset_file your_dataset \
---coco_path /project/dsp/loijilai/cvpdl/hw1_dataset \
---epochs 310 --lr=1e-4  --batch_size=2 --num_workers=4 \
---output_dir=./outputs --resume=/tmp/loijilai/cvpdl/Fine-Tuning-DETR/checkpoint0299.pth
