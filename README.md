@@ -36,7 +36,10 @@ pip install -U 'git+https://github.com/cocodataset/cocoapi.git#subdirectory=Pyth
     ```
 * After 7 categories * 20 images * 3 strategies = 420 images generated, augment train set annotations with [add_train.py](add_train.py)
 * Augment train set with [move_pictures.py](move_pictures.py)
-* Check the generated image quality using FID scores, manually select 140 images using [this script](manually_select_140_photos.py)
+* Check the generated image quality using FID scores, manually select 140 real images and resize using [this script](manually_select_140_photos.py) and run
+    ```
+    python -m pytorch_fid path/to/dataset1 path/to/dataset2
+    ```
 
 ### Training
 * Refer to [this document](./utils/detr_finetune.md) on how to fine-tune detr on custom dataset. Use [this script](./utils/finetune_prepare.py) to get pretrained model.

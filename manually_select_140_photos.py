@@ -1,6 +1,7 @@
 import os
 import json
 import shutil
+from PIL import Image
 
 # Path to your folders and JSON file
 folder_a = '/project/dsp/loijilai/cvpdl/hw1_dataset/train'
@@ -19,7 +20,9 @@ for d in data:
 
     # Check if the image exists in folder A and then move it to folder B
     if os.path.exists(source_path):
-        shutil.copy(source_path, destination_path)
-        print(f"Copy {image_name} from Folder A to Folder B.")
+        with Image.open(source_path) as img:
+            img = img.resize((512, 512), Image.Resampling.LANCZOS)
+            img.save(destination_path)
+        print(f"Copy and resize {image_name} from Folder A to Folder B.")
     else:
         print(f"{image_name} not found in Folder A.")
